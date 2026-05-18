@@ -1,0 +1,69 @@
+{
+  "name": "ep-zero",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lightweight Ableton Link to USB MIDI Clock bridge for macOS.",
+  "main": "dist/main/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build:main && concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "build": "svelte-check --tsconfig ./tsconfig.json && vite build && npm run build:main",
+    "build:main": "tsc -p tsconfig.main.json && node scripts/copy-preload.cjs",
+    "rebuild:link": "node-gyp rebuild --directory node_modules/abletonlink",
+    "rebuild:native": "electron-rebuild -f -w midi -w abletonlink",
+    "copy:mac-app": "ditto release/mac-arm64/EP-ZERO.app EP-ZERO.app",
+    "dist:mac": "npm run build && npm run rebuild:native && electron-builder --mac dir && npm run copy:mac-app",
+    "dist:dmg": "npm run build && npm run rebuild:native && electron-builder --mac dmg",
+    "diagnose:midi": "ELECTRON_RUN_AS_NODE=1 electron scripts/diagnose-midi.cjs 10000",
+    "test": "vitest run",
+    "preview": "vite preview --host 127.0.0.1",
+    "electron": "electron ."
+  },
+  "dependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "electron-store": "^10.0.0",
+    "svelte": "^5.17.3",
+    "vite": "^6.0.7"
+  },
+  "optionalDependencies": {
+    "abletonlink": "^0.2.0-beta.0",
+    "midi": "^2.0.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.4",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^22.10.5",
+    "concurrently": "^9.1.2",
+    "electron": "^34.0.0",
+    "electron-builder": "^26.0.12",
+    "node-gyp": "^12.3.0",
+    "svelte-check": "^4.1.4",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "productName": "EP-ZERO",
+    "appId": "com.epzero.app",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/midi/**/*",
+      "node_modules/abletonlink/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "icon": "build/icon.icns"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "npm@11.10.0"
+}

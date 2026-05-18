@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.svelte-kit/
+.vite/
+release/
+*.app/
+.DS_Store
+*.log
+*.tsbuildinfo
+clockbridge-config.json
