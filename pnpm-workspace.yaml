@@ -1,0 +1,6 @@
+allowBuilds:
+  abletonlink: true
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  midi: true
