@@ -1,4 +1,5 @@
 import { defaultConfig, defaultStatus } from "../shared/defaults.js";
+import { findMatchingMidiOutput } from "../shared/midi-names.js";
 import type {
   EpZeroConfig,
   EpZeroStatus,
@@ -56,11 +57,15 @@ export class LinkToMidiClockEngine {
 
   setAvailableMidiOutputs(outputs: string[]): EpZeroStatus {
     this.status.availableMidiOutputs = outputs;
-    const selectedExists = outputs.includes(this.config.midiOutputName);
-    const preferredOutput = selectedExists ? this.config.midiOutputName : preferredMidiOutput(outputs);
+    const selectedOutput = findMatchingMidiOutput(outputs, this.config.midiOutputName);
 
-    if ((!this.config.midiOutputName || !selectedExists) && preferredOutput) {
-      this.config.midiOutputName = preferredOutput;
+    if (selectedOutput) {
+      this.config.midiOutputName = selectedOutput;
+      this.status.selectedMidiOutput = selectedOutput;
+    } else if (!this.config.midiOutputName) {
+      this.config.midiOutputName = preferredMidiOutput(outputs);
+      this.status.selectedMidiOutput = this.config.midiOutputName;
+    } else {
       this.status.selectedMidiOutput = this.config.midiOutputName;
     }
 

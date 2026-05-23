@@ -91,11 +91,31 @@ describe("LinkToMidiClockEngine", () => {
     expect(engine.getConfig().kickOffsetMs).toBe(-250);
   });
 
-  it("falls back to a hardware output when a stale configured name is unavailable", () => {
-    const engine = new LinkToMidiClockEngine({ ...defaultConfig, midiOutputName: "Old USB Device" });
+  it("selects a preferred hardware output when no MIDI output is configured", () => {
+    const engine = new LinkToMidiClockEngine(defaultConfig);
     engine.setAvailableMidiOutputs(["Virtual Midi Virtual", "USB MIDI Device"]);
 
     expect(engine.getStatus().selectedMidiOutput).toBe("USB MIDI Device");
+  });
+
+  it("remembers the last selected MIDI output while it is disconnected", () => {
+    const engine = new LinkToMidiClockEngine({ ...defaultConfig, midiOutputName: "EP-133 KO II" });
+
+    engine.setAvailableMidiOutputs(["Virtual Midi Virtual", "USB MIDI Device"]);
+    expect(engine.getConfig().midiOutputName).toBe("EP-133 KO II");
+    expect(engine.getStatus().selectedMidiOutput).toBe("EP-133 KO II");
+
+    engine.setAvailableMidiOutputs(["Virtual Midi Virtual", "EP-133 KO II"]);
+    expect(engine.getStatus().selectedMidiOutput).toBe("EP-133 KO II");
+  });
+
+  it("recognizes the remembered MIDI output when the returned port name is equivalent", () => {
+    const engine = new LinkToMidiClockEngine({ ...defaultConfig, midiOutputName: "EP-133 KO II" });
+
+    engine.setAvailableMidiOutputs(["EP 133 MIDI Out"]);
+
+    expect(engine.getConfig().midiOutputName).toBe("EP 133 MIDI Out");
+    expect(engine.getStatus().selectedMidiOutput).toBe("EP 133 MIDI Out");
   });
 
   it("keeps a valid user-selected virtual output when other MIDI devices are available", () => {

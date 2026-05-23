@@ -14,6 +14,9 @@ importers:
       electron-store:
         specifier: ^10.0.0
         version: 10.1.0
+      file-uri-to-path:
+        specifier: 1.0.0
+        version: 1.0.0
       svelte:
         specifier: ^5.17.3
         version: 5.55.7
@@ -3172,8 +3175,7 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
-  file-uri-to-path@1.0.0:
-    optional: true
+  file-uri-to-path@1.0.0: {}
 
   filelist@1.0.6:
     dependencies:

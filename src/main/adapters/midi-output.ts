@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import { findMatchingMidiOutput } from "../shared/midi-names.js";
 import type { MidiOutCommand } from "../shared/types.js";
 
 const require = createRequire(import.meta.url);
@@ -44,13 +45,11 @@ export class MidiOutputAdapter {
 
     const output = new midi.Output();
     const count = output.getPortCount();
-    const portIndex = Array.from({ length: count }, (_, index) => index).find(
-      (index) => output.getPortName(index) === name
-    ) ?? Array.from({ length: count }, (_, index) => index).find(
-      (index) => sameMidiDevice(output.getPortName(index), name)
-    );
+    const names = Array.from({ length: count }, (_, index) => output.getPortName(index));
+    const matchingName = findMatchingMidiOutput(names, name);
+    const portIndex = matchingName ? names.indexOf(matchingName) : -1;
 
-    if (portIndex === undefined) {
+    if (portIndex === -1) {
       output.closePort();
       this.warning = `MIDI output not found: ${name}`;
       return this.warning;
@@ -105,21 +104,4 @@ export class MidiOutputAdapter {
       return null;
     }
   }
-}
-
-function sameMidiDevice(portName: string, requestedName: string): boolean {
-  const port = normalizeMidiName(portName);
-  const requested = normalizeMidiName(requestedName);
-
-  if (!port || !requested) return false;
-  if (port === requested) return true;
-
-  return port.includes(requested) || requested.includes(port);
-}
-
-function normalizeMidiName(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/k\.?\s*o\.?\s*ii/g, "")
-    .replace(/[^a-z0-9]+/g, "");
 }
