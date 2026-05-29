@@ -191,7 +191,7 @@
 
         <div class="offset-block">
           <div class="delay-head">
-            <label for="kick-offset">Kick Offset</label>
+            <label for="kick-offset">Beat Offset</label>
             <output for="kick-offset">{ms(snapshot.config.kickOffsetMs)}</output>
           </div>
           <input
