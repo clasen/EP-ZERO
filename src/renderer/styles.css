@@ -444,13 +444,12 @@ input[type="range"]::-webkit-slider-thumb {
 .actions {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
+  gap: 14px;
   margin-top: 12px;
 }
 
 .actions.four {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-top: 16px;
 }
 
 .pad {
@@ -465,9 +464,13 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .nudge .pad {
-  min-height: 40px;
+  min-height: 32px;
   padding-inline: 4px;
   font-size: 12px;
+}
+
+.actions .pad {
+  min-height: 44px;
 }
 
 .pad:active {
