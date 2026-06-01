@@ -20,6 +20,9 @@ const engine = new LinkToMidiClockEngine(store.get("config"));
 const midi = new MidiOutputAdapter();
 const link = new AbletonLinkReader();
 const windows = new Set<BrowserWindow>();
+const INITIAL_WINDOW_WIDTH = 320;
+const MIN_WINDOW_WIDTH = 380;
+const MIN_WINDOW_HEIGHT = 600;
 
 let schedulerTimer: NodeJS.Timeout | null = null;
 let midiRefreshTimer: NodeJS.Timeout | null = null;
@@ -78,7 +81,7 @@ function persistConfig(): void {
 
 async function createWindow(): Promise<void> {
   const workArea = screen.getPrimaryDisplay().workArea;
-  const width = 460;
+  const width = INITIAL_WINDOW_WIDTH;
   const height = Math.min(780, workArea.height);
 
   const window = new BrowserWindow({
@@ -87,8 +90,8 @@ async function createWindow(): Promise<void> {
     height,
     x: workArea.x + workArea.width - width,
     y: workArea.y,
-    minWidth: 380,
-    minHeight: 600,
+    minWidth: MIN_WINDOW_WIDTH,
+    minHeight: MIN_WINDOW_HEIGHT,
     backgroundColor: "#101417",
     icon: appIconPath(),
     titleBarStyle: "hiddenInset",

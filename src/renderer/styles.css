@@ -232,14 +232,18 @@ h1 {
 
 .link-state {
   display: block;
-  min-width: 7.5ch;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
   color: #fff;
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.08em;
   line-height: 1;
   text-align: right;
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .display-side {
@@ -248,6 +252,7 @@ h1 {
   gap: 16px;
   align-content: end;
   align-items: stretch;
+  min-width: 0;
   padding: 16px 28px 0;
 }
 
