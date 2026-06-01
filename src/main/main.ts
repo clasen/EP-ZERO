@@ -31,13 +31,23 @@ function appIconPath(): string {
   return isDev ? join(process.cwd(), "public/app-icon.png") : join(__dirname, "../renderer/app-icon.png");
 }
 
-async function fitWindowToContent(window: BrowserWindow, width: number, maxHeight: number): Promise<void> {
+function alignWindowToRightEdge(window: BrowserWindow, workArea: Electron.Rectangle): void {
+  const bounds = window.getBounds();
+  window.setPosition(workArea.x + workArea.width - bounds.width, workArea.y);
+}
+
+async function fitWindowToContent(
+  window: BrowserWindow,
+  width: number,
+  workArea: Electron.Rectangle
+): Promise<void> {
   const contentHeight = await window.webContents.executeJavaScript(
     "Math.ceil(document.documentElement.scrollHeight)",
     true
   );
-  const nextHeight = Math.min(Math.max(Number(contentHeight) || 620, 600), maxHeight);
+  const nextHeight = Math.min(Math.max(Number(contentHeight) || 620, MIN_WINDOW_HEIGHT), workArea.height);
   window.setContentSize(width, nextHeight);
+  alignWindowToRightEdge(window, workArea);
 }
 
 function snapshot(): AppSnapshot {
@@ -103,10 +113,11 @@ async function createWindow(): Promise<void> {
   });
 
   windows.add(window);
+  alignWindowToRightEdge(window, workArea);
   window.on("closed", () => windows.delete(window));
   window.webContents.once("did-finish-load", () => {
     window.webContents.setZoomFactor(1);
-    void fitWindowToContent(window, width, workArea.height);
+    void fitWindowToContent(window, width, workArea);
     void window.webContents.executeJavaScript("Boolean(window.epZero)").then((connected) => {
       console.log(`Renderer bridge: ${connected ? "connected" : "missing"}`);
     });
