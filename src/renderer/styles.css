@@ -248,10 +248,11 @@ h1 {
 
 .display-side {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, max-content);
+  justify-content: space-between;
   align-content: end;
   align-items: stretch;
+  column-gap: 16px;
   min-width: 0;
   padding: 16px 28px 0;
 }
@@ -270,8 +271,8 @@ h1 {
 }
 
 .display-side div:nth-child(2) {
-  justify-items: center;
-  text-align: center;
+  justify-items: start;
+  text-align: left;
 }
 
 .display-side div:nth-child(3) {

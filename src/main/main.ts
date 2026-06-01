@@ -20,8 +20,8 @@ const engine = new LinkToMidiClockEngine(store.get("config"));
 const midi = new MidiOutputAdapter();
 const link = new AbletonLinkReader();
 const windows = new Set<BrowserWindow>();
-const INITIAL_WINDOW_WIDTH = 320;
-const MIN_WINDOW_WIDTH = 380;
+const INITIAL_WINDOW_WIDTH = 380;
+const MIN_WINDOW_WIDTH = 320;
 const MIN_WINDOW_HEIGHT = 600;
 
 let schedulerTimer: NodeJS.Timeout | null = null;
